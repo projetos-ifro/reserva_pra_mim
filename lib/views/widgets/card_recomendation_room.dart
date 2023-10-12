@@ -71,13 +71,15 @@ class CardRecomendationRoom extends StatelessWidget {
                         ),
                         const Spacer(),
                         Container(
-                          width: size.width * .55,
-                          alignment: Alignment.bottomRight,
-                          child: const Text(
-                            'R\$ 15,00 / Hr',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )
+                            width: size.width * .5,
+                            alignment: Alignment.bottomRight,
+                            child: const Text(
+                              'R\$15,00 / Hr',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ))
                       ],
                     ),
                   ),

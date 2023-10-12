@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../modelviews/constants.dart';
 
 class CardPopularRoom extends StatelessWidget {
@@ -13,16 +14,6 @@ class CardPopularRoom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          'Salas Populares',
-          style: TextStyle(
-              color: bgColor,
-              fontSize: defaultpd * 1.5,
-              fontWeight: FontWeight.bold),
-        ),
-        SizedBox(
-          height: defaultpd / 2,
-        ),
         GestureDetector(
           onTap: () {},
           child: Container(
@@ -55,13 +46,19 @@ class CardPopularRoom extends StatelessWidget {
                               color: Colors.white,
                               fontSize: defaultpd),
                         ),
-                        Text(
-                          '(5.0)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: defaultpd),
-                        ),
+                        Row(children: [
+                          Text(
+                            '(5.0)',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: defaultpd),
+                          ),
+                          const FaIcon(
+                            Icons.star_rounded,
+                            color: Colors.white,
+                          )
+                        ])
                       ],
                     ),
                     Text(

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9364041894",
+    "project_id": "reserva-pra-mim",
+    "storage_bucket": "reserva-pra-mim.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9364041894:android:2b9171f974a8b744120467",
+        "android_client_info": {
+          "package_name": "br.com.nascign.reserva_pra_mim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9364041894-ll5cfu87oc66s7t1q6j49c95lff1e3rj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbPtETdHfpcq4eau7BVXe5XeySwAmVfw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9364041894-ll5cfu87oc66s7t1q6j49c95lff1e3rj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

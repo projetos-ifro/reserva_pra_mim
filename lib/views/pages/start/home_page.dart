@@ -22,9 +22,25 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.symmetric(
             horizontal: defaultpd, vertical: defaultpd * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          CardPopularRoom(size: size),
-          SizedBox(
-            height: defaultpd * 2,
+          Text(
+            'Salas Populares',
+            style: TextStyle(
+                color: bgColor,
+                fontSize: defaultpd * 1.5,
+                fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.all(defaultpd),
+                itemCount: 4,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: defaultpd),
+                    child: CardPopularRoom(size: size),
+                  );
+                }),
           ),
           CardRecomendationRoom(size: size),
           Container()

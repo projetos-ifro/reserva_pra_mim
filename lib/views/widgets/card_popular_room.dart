@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reserva_pra_mim/views/widgets/card_addons_room.dart';
 import '../../modelviews/constants.dart';
 
 class CardPopularRoom extends StatelessWidget {
@@ -13,16 +15,6 @@ class CardPopularRoom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          'Salas Populares',
-          style: TextStyle(
-              color: bgColor,
-              fontSize: defaultpd * 1.5,
-              fontWeight: FontWeight.bold),
-        ),
-        SizedBox(
-          height: defaultpd / 2,
-        ),
         GestureDetector(
           onTap: () {},
           child: Container(
@@ -55,13 +47,19 @@ class CardPopularRoom extends StatelessWidget {
                               color: Colors.white,
                               fontSize: defaultpd),
                         ),
-                        Text(
-                          '(5.0)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: defaultpd),
-                        ),
+                        Row(children: [
+                          Text(
+                            '(5.0)',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: defaultpd),
+                          ),
+                          const FaIcon(
+                            Icons.star_rounded,
+                            color: Colors.white,
+                          )
+                        ])
                       ],
                     ),
                     Text(
@@ -74,26 +72,16 @@ class CardPopularRoom extends StatelessWidget {
                     const Spacer(),
                     Row(
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: size.width * 0.15,
-                          height: size.height * 0.03,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(defaultpd)),
-                          child: Text('Wifi'),
+                        Card_addons_room(
+                          size: size,
+                          text: 'Wifi',
                         ),
                         SizedBox(
                           width: defaultpd / 2,
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: size.width * 0.15,
-                          height: size.height * 0.03,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(defaultpd)),
-                          child: Text('Projetor'),
+                        Card_addons_room(
+                          size: size,
+                          text: 'Projetor',
                         ),
                         const Spacer(),
                         const Text(

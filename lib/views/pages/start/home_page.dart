@@ -74,13 +74,56 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.white70,
                               fontWeight: FontWeight.bold,
                               fontSize: defaultpd / 1.5),
+                        ),
+                        Spacer(),
+                        Row(
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              width: size.width * 0.15,
+                              height: size.height * 0.03,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(defaultpd)),
+                              child: Text('Wifi'),
+                            ),
+                            SizedBox(
+                              width: defaultpd / 2,
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              width: size.width * 0.15,
+                              height: size.height * 0.03,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(defaultpd)),
+                              child: Text('Projetor'),
+                            ),
+                            const Spacer(),
+                            const Text(
+                              'R\$15,00 / Hr',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         )
                       ]),
                 ),
               )
             ]),
           ),
-          Container(),
+          SizedBox(
+            height: defaultpd * 2,
+          ),
+          Container(
+            child: Column(
+              children: [Text('Recomendações')],
+            ),
+          ),
           Container()
         ]),
       ),

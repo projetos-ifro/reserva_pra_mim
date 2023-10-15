@@ -1,15 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class My_app_bar extends StatefulWidget {
-  const My_app_bar({super.key});
+import '../../modelviews/firebase/authentication.dart';
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppBar({super.key});
 
   @override
-  State<My_app_bar> createState() => _My_app_barState();
-}
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
-class _My_app_barState extends State<My_app_bar> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return AppBar(
+      backgroundColor: const Color(0xFF006060),
+      title: const Text(
+        'Reserva Pra Mim',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.logout,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            final logoutController = Get.find<Logout>();
+            logoutController.logout(context);
+          },
+        ),
+      ],
+    );
   }
 }

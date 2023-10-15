@@ -5,6 +5,7 @@ import 'package:reserva_pra_mim/views/widgets/card_home_search.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
 import 'package:reserva_pra_mim/views/widgets/nav_bar.dart';
 
+import '../../widgets/app_bar.dart';
 import '../../widgets/card_recomendation_room.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: CustomAppBar(),
       body: ListView(
         physics: const BouncingScrollPhysics(),
         children: <Widget>[

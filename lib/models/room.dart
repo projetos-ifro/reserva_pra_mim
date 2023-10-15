@@ -3,6 +3,7 @@ class Room {
   bool isAvailable;
   String name;
   String description;
+  bool withWifi;
   bool withDatashow;
   bool withTv;
   bool withSoundBox;
@@ -16,6 +17,7 @@ class Room {
     required this.name,
     required this.description,
     required this.withDatashow,
+    required this.withWifi,
     required this.withTv,
     required this.withSoundBox,
     required this.roomImage,

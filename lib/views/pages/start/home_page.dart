@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
+import 'package:reserva_pra_mim/views/pages/salas/create_room.dart';
 import 'package:reserva_pra_mim/views/widgets/card_home_search.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
 import 'package:reserva_pra_mim/views/widgets/nav_bar.dart';
@@ -31,6 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Create_room()));
+                    },
+                    child: const Text('Teste')),
                 Card_home_search(
                   size: size,
                 ),
@@ -43,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: defaultpd / 2),
-                Container(
+                SizedBox(
                   height:
                       size.height * 0.3, // Defina uma altura inicial desejada
                   child: ListView.builder(

@@ -39,6 +39,7 @@ class _Card_home_searchState extends State<Card_home_search> {
         ),
         TextFormField(
           decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(defaultpd),
               prefixIcon: const Icon(
                 Icons.search,
                 color: bgColor,

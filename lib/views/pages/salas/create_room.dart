@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
+import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 
 class Create_room extends StatefulWidget {
   const Create_room({super.key});
@@ -18,6 +20,9 @@ class _Create_roomState extends State<Create_room> {
   bool _DataShow = false;
   bool _SoundBox = false;
   bool _Tv = false;
+
+  late Room formRoom;
+  final controlRoom = ControlRoom();
 
   @override
   void dispose() {
@@ -167,7 +172,9 @@ class _Create_roomState extends State<Create_room> {
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        controlRoom.addRoom(formRoom);
+                      }
                     },
                     child: Container(
                       height: 50,
@@ -195,5 +202,19 @@ class _Create_roomState extends State<Create_room> {
         ),
       ),
     );
+  }
+
+  void _saveSala() async {
+    if (_formKey.currentState!.validate()) {
+      Sala novaSala = Sala(
+        id: FirebaseFirestore.instance.collection('salas').doc().id,
+        nome: _nomeController.text,
+        capacidade: int.parse(_capacidadeController.text),
+        custoPorHora: double.parse(_custoPorHoraController.text),
+        recursos: _recursosSelecionados,
+      );
+      await salaController.addSala(novaSala);
+      Get.offNamed('/salas');
+    }
   }
 }

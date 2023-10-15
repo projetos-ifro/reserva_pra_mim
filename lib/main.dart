@@ -15,6 +15,7 @@ void main() async {
 
   Get.put(LoginEmaileSenha());
   Get.put(RegisterEmailSenha());
+  Get.put(Logout());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,

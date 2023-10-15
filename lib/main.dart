@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reserva_pra_mim/views/pages/start/home_page.dart';
 import 'package:reserva_pra_mim/views/pages/start/login_page.dart';
-
-import 'modelviews/firebase/authetication.dart';
+import 'package:reserva_pra_mim/views/pages/start/logon_page.dart';
+import 'modelviews/firebase/authentication.dart';
 import 'modelviews/firebase/firebase_options.dart';
 
 void main() async {
@@ -13,14 +13,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Get.put(LoginEmaileSenha()); // Registrar a instância LoginEmaileSenha
+  Get.put(LoginEmaileSenha());
+  Get.put(RegisterEmailSenha());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/login',
     getPages: [
       GetPage(name: '/login', page: () => LoginPage()),
-      //GetPage(name: '/register', page: () => const RegisterPage()),
+      GetPage(name: '/logon', page: () => const LogonPage()),
       GetPage(name: '/home', page: () => const HomeScreen()),
     ],
     home: LoginPage(),

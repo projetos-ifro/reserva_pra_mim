@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../modelviews/firebase/authetication.dart';
+import '../../../modelviews/firebase/authentication.dart';
 
 class LoginPage extends StatelessWidget {
   final LoginEmaileSenha loginController = Get.find();
@@ -13,14 +13,17 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          color: const Color(0xFF097878), // Cor de fundo #097878
-          height: MediaQuery.of(context).size.height, // Define a altura como a altura da tela
+          color: const Color(0xFF097878),
+          height: MediaQuery.of(context)
+              .size
+              .height,
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 80, 50, 80),
                 child: SizedBox(
-                  child: Image.asset('assets/logo.png', width: 100, height: 100),
+                  child:
+                      Image.asset('assets/logo.png', width: 100, height: 100),
                 ),
               ),
               Expanded(
@@ -42,7 +45,6 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                    
                         TextField(
                           controller: loginController.controladorSenha,
                           decoration: const InputDecoration(
@@ -50,41 +52,49 @@ class LoginPage extends StatelessWidget {
                           ),
                           obscureText: true,
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            TextButton(
+                              onPressed: () => loginController.esqueceuSenha(context),
+                              child: const Text('Esqueceu a senha?', style: TextStyle(color: Colors.blue, fontSize: 14)),
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 30),
-                    
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Get.toNamed('/register');
+                                Get.toNamed('/logon');
                               },
                               child: const Text('Registre-se',
-                                  style: TextStyle(color: Colors.blue, fontSize: 16)),
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 16)),
                             ),
-                            SizedBox(width: 15,),
-                    
+                            SizedBox(
+                              width: 15,
+                            ),
                             ElevatedButton(
                               onPressed: () => loginController.login(context),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                const Color(0xFF006060),
+                                backgroundColor: const Color(0xFF006060),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
                               ),
-                              child: const Text('Entrar', style: TextStyle(color: Colors.white, fontSize: 18),),
+                              child: const Text(
+                                'Entrar',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 70),
-
-                        // Ícone do Google (adapte para o ícone desejado)
                         GestureDetector(
-                          onTap: () {
-                            // Implemente a autenticação com o Google
-                          },
+                          onTap: () {},
                           child: Image.asset('assets/google.png',
                               width: 40, height: 40),
                         ),

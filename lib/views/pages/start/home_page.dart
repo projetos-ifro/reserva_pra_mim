@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
+import 'package:reserva_pra_mim/views/widgets/card_home_search.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
 import 'package:reserva_pra_mim/views/widgets/nav_bar.dart';
 
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(
@@ -30,6 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Card_home_search(
+                  size: size,
+                ),
                 Text(
                   'Salas Populares',
                   style: TextStyle(
@@ -44,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size.height * 0.3, // Defina uma altura inicial desejada
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.all(defaultpd),
                     itemCount: 4, // Defina o número de itens dinamicamente
                     itemBuilder: (BuildContext context, int index) {
@@ -63,10 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 2000, // Defina uma altura inicial desejada
                   child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.all(defaultpd),
                     itemCount: 4, // Defina o número de itens dinamicamente
                     itemBuilder: (BuildContext context, int index) {
@@ -82,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: MyNavBar(),
+      bottomNavigationBar: const My_nav_bar(),
     );
   }
 }

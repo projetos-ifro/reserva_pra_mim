@@ -3,22 +3,28 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 
-class MyNavBar extends StatefulWidget {
-  const MyNavBar({super.key});
+class My_nav_bar extends StatefulWidget {
+  const My_nav_bar({super.key});
 
   @override
-  State<MyNavBar> createState() => _MyNavBarState();
+  State<My_nav_bar> createState() => _My_nav_barState();
 }
 
-class _MyNavBarState extends State<MyNavBar> {
+class _My_nav_barState extends State<My_nav_bar> {
   @override
   Widget build(BuildContext context) {
-    return const GNav(
-        activeColor: Colors.white,
+    return GNav(
+        tabMargin: EdgeInsets.all(defaultpd / 2),
+        iconSize: defaultpd,
+        activeColor: bgColor,
         color: Colors.white,
         backgroundColor: bgColor,
+        tabBackgroundColor: Colors.white,
         gap: 8,
-        tabs: [
+        onTabChange: (index) {
+          print(index);
+        },
+        tabs: const [
           GButton(
             icon: FontAwesomeIcons.ticket,
             text: 'Progresso',
@@ -29,7 +35,7 @@ class _MyNavBarState extends State<MyNavBar> {
           ),
           GButton(
             icon: FontAwesomeIcons.listCheck,
-            text: 'Search',
+            text: 'Histórico',
           ),
         ]);
   }

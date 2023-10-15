@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
+import 'package:reserva_pra_mim/views/widgets/nav_bar.dart';
 
 import '../../widgets/card_recomendation_room.dart';
 
@@ -81,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: MyNavBar(),
     );
   }
 }

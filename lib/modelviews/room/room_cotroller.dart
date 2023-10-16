@@ -16,13 +16,19 @@ class ControlRoom extends GetxController {
     super.onInit();
   }
 
+  double SetPrice(double price, bool value, double addon) {
+    if (value) {
+      price += addon;
+    } else {
+      price -= addon;
+    }
+    return price;
+  }
+
   Future<void> addRoom(Room room) async {
     try {
       isLoading(true);
-      await FirebaseFirestore.instance
-          .collection('rooms')
-          .doc(room.id)
-          .set(room.toMap());
+      await FirebaseFirestore.instance.collection('rooms').add(room.toMap());
     } catch (e) {
       print("Erro ao tentar adicionar a sala: $e");
     } finally {

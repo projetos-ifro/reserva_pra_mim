@@ -11,10 +11,10 @@ class Room {
   bool withSoundBox;
   String roomImage;
   double pricePerHour;
-  double capacity;
+  int capacity;
 
   Room({
-    required this.id,
+    this.id = '',
     required this.isAvailable,
     required this.name,
     required this.description,

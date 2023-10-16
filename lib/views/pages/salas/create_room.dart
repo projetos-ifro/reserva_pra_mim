@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
@@ -17,12 +19,48 @@ class _Create_roomState extends State<Create_room> {
   final TextEditingController _descricaoController = TextEditingController();
   final TextEditingController _capacidadeController = TextEditingController();
   bool _wifi = false;
-  bool _DataShow = false;
-  bool _SoundBox = false;
-  bool _Tv = false;
+  bool _dataShow = false;
+  bool _soundBox = false;
+  bool _tv = false;
 
-  late Room formRoom;
   final controlRoom = ControlRoom();
+  late Room formRoom;
+  _Create_roomState() {
+    formRoom = Room(
+      isAvailable: true,
+      name: '',
+      description: '',
+      withDatashow: false,
+      withWifi: false,
+      withTv: false,
+      withSoundBox: false,
+      roomImage: '',
+      pricePerHour: 0.0,
+      capacity: 0,
+    );
+  }
+
+  void _saveSala() async {
+    if (_formKey.currentState!.validate()) {
+      Room newRoom = Room(
+        id: FirebaseFirestore.instance.collection('rooms').doc().id,
+        isAvailable: true,
+        name: _nomeSalaController.text,
+        description: _descricaoController.text,
+        withDatashow: _dataShow,
+        withWifi: _wifi,
+        withTv: _tv,
+        withSoundBox: _soundBox,
+        roomImage: 'none',
+        pricePerHour: price,
+        capacity: int.parse(_capacidadeController.text),
+      );
+      await controlRoom.addRoom(newRoom);
+      Get.offNamed('/home');
+    }
+  }
+
+  double price = 15; // Preço base
 
   @override
   void dispose() {
@@ -58,19 +96,19 @@ class _Create_roomState extends State<Create_room> {
                 TextFormField(
                   controller: _nomeSalaController,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(12.0),
+                    contentPadding: const EdgeInsets.all(12.0),
                     labelText: 'Nome',
-                    labelStyle: TextStyle(color: bgColor),
+                    labelStyle: const TextStyle(color: bgColor),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
@@ -81,19 +119,19 @@ class _Create_roomState extends State<Create_room> {
                 TextFormField(
                   controller: _descricaoController,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(12.0),
+                    contentPadding: const EdgeInsets.all(12.0),
                     labelText: 'Descrição',
-                    labelStyle: TextStyle(color: bgColor),
+                    labelStyle: const TextStyle(color: bgColor),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2, color: bgColor),
+                      borderSide: const BorderSide(width: 2, color: bgColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
@@ -107,19 +145,19 @@ class _Create_roomState extends State<Create_room> {
                   child: TextFormField(
                     controller: _capacidadeController,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(12.0),
+                      contentPadding: const EdgeInsets.all(12.0),
                       labelText: 'Capacidade',
-                      labelStyle: TextStyle(color: bgColor),
+                      labelStyle: const TextStyle(color: bgColor),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2, color: bgColor),
+                        borderSide: const BorderSide(width: 2, color: bgColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2, color: bgColor),
+                        borderSide: const BorderSide(width: 2, color: bgColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2, color: bgColor),
+                        borderSide: const BorderSide(width: 2, color: bgColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
@@ -136,34 +174,53 @@ class _Create_roomState extends State<Create_room> {
                     setState(() {
                       _wifi = value ?? false;
                     });
+
+                    price = controlRoom.SetPrice(price, value!, roomWithWifi);
                   },
                 ),
                 CheckboxListTile(
                   title: const Text('DataShow'),
-                  value: _DataShow,
+                  value: _dataShow,
                   onChanged: (bool? value) {
                     setState(() {
-                      _DataShow = value ?? false;
+                      _dataShow = value ?? false;
                     });
+
+                    price =
+                        controlRoom.SetPrice(price, value!, roomWithDataShow);
                   },
                 ),
                 CheckboxListTile(
                   title: const Text('Caixa de Som'),
-                  value: _SoundBox,
+                  value: _soundBox,
                   onChanged: (bool? value) {
                     setState(() {
-                      _SoundBox = value ?? false;
+                      _soundBox = value ?? false;
                     });
+
+                    price = controlRoom.SetPrice(price, value!, roomWithSound);
                   },
                 ),
                 CheckboxListTile(
                   title: const Text('Tv'),
-                  value: _Tv,
+                  value: _tv,
                   onChanged: (bool? value) {
                     setState(() {
-                      _Tv = value ?? false;
+                      _tv = value ?? false;
                     });
+
+                    price = controlRoom.SetPrice(price, value!, roomWithTV);
                   },
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  'Preço: R\$ $price,00 / Hr',
+                  style: TextStyle(
+                      color: bgColor,
+                      fontSize: defaultpd * 1.5,
+                      fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 80,
@@ -173,7 +230,7 @@ class _Create_roomState extends State<Create_room> {
                   child: GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        controlRoom.addRoom(formRoom);
+                        _saveSala();
                       }
                     },
                     child: Container(
@@ -202,19 +259,5 @@ class _Create_roomState extends State<Create_room> {
         ),
       ),
     );
-  }
-
-  void _saveSala() async {
-    if (_formKey.currentState!.validate()) {
-      Sala novaSala = Sala(
-        id: FirebaseFirestore.instance.collection('salas').doc().id,
-        nome: _nomeController.text,
-        capacidade: int.parse(_capacidadeController.text),
-        custoPorHora: double.parse(_custoPorHoraController.text),
-        recursos: _recursosSelecionados,
-      );
-      await salaController.addSala(novaSala);
-      Get.offNamed('/salas');
-    }
   }
 }

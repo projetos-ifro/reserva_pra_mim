@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import '../../../modelviews/firebase/authentication.dart';
 
 class LoginPage extends StatelessWidget {
-  final LoginEmaileSenha loginController = Get.find();
+  final TextEditingController controladorEmail = TextEditingController();
+  final TextEditingController controladorSenha = TextEditingController();
+  final Autenticacao autenticacao = Autenticacao();
 
   LoginPage({super.key});
 
@@ -14,16 +16,14 @@ class LoginPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           color: const Color(0xFF097878),
-          height: MediaQuery.of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 80, 50, 80),
                 child: SizedBox(
                   child:
-                      Image.asset('assets/logo.png', width: 100, height: 100),
+                  Image.asset('assets/logo.png', width: 100, height: 100),
                 ),
               ),
               Expanded(
@@ -39,14 +39,14 @@ class LoginPage extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                         TextField(
-                          controller: loginController.controladorEmail,
+                          controller: controladorEmail,
                           decoration: const InputDecoration(
                             labelText: 'Email',
                           ),
                         ),
                         const SizedBox(height: 10),
                         TextField(
-                          controller: loginController.controladorSenha,
+                          controller: controladorSenha,
                           decoration: const InputDecoration(
                             labelText: 'Senha',
                           ),
@@ -56,8 +56,11 @@ class LoginPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             TextButton(
-                              onPressed: () => loginController.esqueceuSenha(context),
-                              child: const Text('Esqueceu a senha?', style: TextStyle(color: Colors.blue, fontSize: 14)),
+                              onPressed: () => autenticacao.resetPassword(
+                                  context, controladorEmail.text),
+                              child: const Text('Esqueceu a senha?',
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 14)),
                             ),
                           ],
                         ),
@@ -73,11 +76,17 @@ class LoginPage extends StatelessWidget {
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 16)),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 15,
                             ),
                             ElevatedButton(
-                              onPressed: () => loginController.login(context),
+                              onPressed: () async {
+                                 await autenticacao.loginUser(
+                                  context,
+                                  controladorEmail.text,
+                                  controladorSenha.text,
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF006060),
                                 shape: RoundedRectangleBorder(
@@ -87,7 +96,9 @@ class LoginPage extends StatelessWidget {
                               child: const Text(
                                 'Entrar',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ],

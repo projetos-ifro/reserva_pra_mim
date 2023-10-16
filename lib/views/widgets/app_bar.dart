@@ -29,8 +29,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
           onPressed: () {
-            final logoutController = Get.find<Logout>();
-            logoutController.logout(context);
+            final logoutController = Autenticacao().logout(context);
+            //logoutController.logout(context);
           },
         ),
       ],

@@ -1,51 +1,118 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-//Login
-class LoginEmaileSenha {
-  final TextEditingController _controladorEmail = TextEditingController();
-  final TextEditingController _controladorSenha = TextEditingController();
+class Autenticacao {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  TextEditingController get controladorEmail => _controladorEmail;
-
-  TextEditingController get controladorSenha => _controladorSenha;
-
-  void dispose() {
-    _controladorEmail.dispose();
-    _controladorSenha.dispose();
-  }
-
-  Future<void> login(BuildContext context) async {
+  Future<User?> createUser(BuildContext context, String name, String email,
+      String password, String confirmPassword, bool isAdmin) async {
     try {
-      final credencial = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _controladorEmail.text, password: _controladorSenha.text);
-      _controladorEmail.clear();
-      _controladorSenha.clear();
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+      final emailRegex =
+      RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+
+      if (!emailRegex.hasMatch(email)) {
+        print('Email inválido');
+        return null;
       }
+
+      if (password != confirmPassword) {
+        print('As senhas não coincidem');
+        return null;
+      }
+
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await user.updateDisplayName(name);
+        await user.reload();
+        await saveUserRegister(user.uid, name, email, isAdmin);
+        Get.offAllNamed('/login');
+      }
+
+      return user;
+    } catch (e) {
+      print('Erro ao criar a conta: $e');
+      return null;
     }
   }
 
-  Future<void> esqueceuSenha(BuildContext context) async {
-    final emailAddress = _controladorEmail.text;
-    if (emailAddress.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, insira seu e-mail')),
-      );
-      return;
-    }
-
+  Future<void> saveUserRegister(
+      String userId, String name, String email, bool isAdmin) async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailAddress);
+      await _db.collection("users").doc(userId).set({
+        'name': name,
+        'email': email,
+        'isAdmin': false,
+      });
+    } catch (e) {
+      print('Erro ao cadastrar o usuário no banco de dados: $e');
+    }
+  }
+
+  Future<void> updateUser(String name, String email) async {
+    try {
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        await currentUser.updateDisplayName(name);
+
+        if (email != currentUser.email) {
+          await currentUser.updateEmail(email);
+        }
+      }
+    } catch (e) {
+      print('Erro ao atualizar os dados: $e');
+    }
+  }
+
+  Future<bool> loginUser(BuildContext context, String email, String password) async {
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        print('Login efetuado com sucesso');
+        Get.offAllNamed('/home');
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'auth/wrong-password') {
+        print('Login ou senha incorretos');
+      } else {
+        print('Opa, algo de errado aconteceu...');
+      }
+      return false;
+    } catch (e) {
+      print('Erro: $e');
+      return false;
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      print('Logout efetuado com sucesso');
+      Get.offAllNamed('/login'); // Redireciona para a tela de login
+    } catch (e) {
+      print('Erro ao fazer logout: $e');
+    }
+  }
+
+  Future<void> resetPassword(BuildContext context, String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
       showDialog(
         context: context,
@@ -63,13 +130,7 @@ class LoginEmaileSenha {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      print('\n');
-      print(e.message);
-      print(e.code);
-      if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Senha incorreta')));
-      } else if (e.code == 'user-not-found') {
+      if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
                 'Nenhuma conta com este e-mail foi encontrada. Considere se registrar.')));
@@ -85,136 +146,21 @@ class LoginEmaileSenha {
       );
     }
   }
-}
 
-//Registro
-class RegisterEmailSenha {
-  final TextEditingController _controladorNome = TextEditingController();
-  final TextEditingController _controladorEmail = TextEditingController();
-  final TextEditingController _controladorSenha = TextEditingController();
-  final TextEditingController _controladorConfirmarSenha =
-      TextEditingController();
-
-  TextEditingController get controladorNome => _controladorNome;
-  TextEditingController get controladorEmail => _controladorEmail;
-  TextEditingController get controladorSenha => _controladorSenha;
-  TextEditingController get controladorConfirmarSenha =>
-      _controladorConfirmarSenha;
-
-  String? validateEmail(String? value) {
-    final value = _controladorEmail.text;
-
-    if (value == null || value.isEmpty) {
-      return 'O campo de email é obrigatório';
-    }
-
-    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Insira um email válido';
-    }
-
-    return null;
-  }
-
-  String? validatePasswordMatch(String? value) {
-    final senha = _controladorSenha.text;
-    final confirmarSenha = _controladorConfirmarSenha.text;
-
-    if (senha != confirmarSenha) {
-      return 'As senhas não coincidem';
-    }
-
-    return null;
-  }
-
-  void dispose() {
-    _controladorEmail.dispose();
-    _controladorSenha.dispose();
-    _controladorNome.dispose();
-    _controladorConfirmarSenha.dispose();
-  }
-
-  Future<void> updateUserName(String displayName) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await user.updateDisplayName(displayName);
-        await user.reload();
-      } catch (e) {
-        print('Erro ao atualizar o nome do usuário: $e');
-      }
-    }
-  }
-
-  Future<void> register(BuildContext context) async {
-    final validationError = validateEmail(_controladorEmail.text);
-    if (validationError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(validationError)),
-      );
-      return;
-    }
-    final passwordMatchError =
-        validatePasswordMatch(_controladorConfirmarSenha.text);
-    if (passwordMatchError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(passwordMatchError)),
-      );
-      return;
-    }
+  Future<bool> isUserAdmin(String userId) async {
     try {
-      final credencial = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: _controladorEmail.text, password: _controladorSenha.text);
+      final DocumentSnapshot userDoc =
+          await _db.collection("users").doc(userId).get();
 
-      await updateUserName(_controladorNome.text);
-      _controladorEmail.clear();
-      _controladorSenha.clear();
-      _controladorConfirmarSenha.clear();
-      _controladorNome.clear();
-
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Já existe uma conta com esse e-mail.')));
+      if (userDoc.exists) {
+        final bool isAdmin = userDoc['isAdmin'];
+        return isAdmin;
       }
+
+      return false; // Usuário não encontrado no Firestore.
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Falha ao registrar')),
-      );
+      print('Erro ao verificar se o usuário é admin: $e');
+      return false;
     }
-  }
-}
-
-//Sair
-class Logout {
-  Future<void> logout(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
-    } catch (e) {}
-  }
-}
-
-class UserController extends GetxController {
-  final Rx<User?> _user = Rx<User?>(null);
-
-  User? get user => _user.value;
-
-  @override
-  void onInit() {
-    super.onInit();
-    _user.bindStream(FirebaseAuth.instance.authStateChanges());
-  }
-}
-
-Future<void> atualizarUsuario(context, String email, String displayName) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    user.updateDisplayName(displayName);
-    user.updateEmail(email);
   }
 }

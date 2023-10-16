@@ -13,16 +13,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Get.put(LoginEmaileSenha());
-  Get.put(RegisterEmailSenha());
-  Get.put(Logout());
-
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/login',
     getPages: [
       GetPage(name: '/login', page: () => LoginPage()),
-      GetPage(name: '/logon', page: () => const LogonPage()),
+      GetPage(name: '/logon', page: () =>  LogonPage()),
       GetPage(name: '/home', page: () => const HomeScreen()),
     ],
     home: LoginPage(),

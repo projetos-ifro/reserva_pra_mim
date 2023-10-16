@@ -110,7 +110,7 @@ class _Detail_roomState extends State<Detail_room> {
                     ),
                     child: const Center(
                       child: Text(
-                        'Adicionar',
+                        'Reservar',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,

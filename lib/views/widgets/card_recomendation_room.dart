@@ -45,7 +45,7 @@ class CardRecomendationRoom extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: size.width * 0.5,
+                        width: size.width * 0.45,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +73,7 @@ class CardRecomendationRoom extends StatelessWidget {
                       ),
                       const Spacer(),
                       Container(
-                          width: size.width * .5,
+                          width: size.width * .45,
                           alignment: Alignment.bottomRight,
                           child: Text(
                             'R\$ ${room.pricePerHour} / Hr',

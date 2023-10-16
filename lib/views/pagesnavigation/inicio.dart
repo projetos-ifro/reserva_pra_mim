@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
+import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 import 'package:reserva_pra_mim/views/pages/salas/create_room.dart';
 import 'package:reserva_pra_mim/views/widgets/card_home_search.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
 import '../widgets/card_recomendation_room.dart';
-
-
 
 class InicioPage extends StatefulWidget {
   const InicioPage({super.key});
@@ -15,6 +16,19 @@ class InicioPage extends StatefulWidget {
 }
 
 class _InicioPageState extends State<InicioPage> {
+  final controlRoom = Get.find<ControlRoom>();
+  var rooms = <Room>[].obs;
+  @override
+  void initState() {
+    super.initState();
+    loadRooms();
+  }
+
+  Future<void> loadRooms() async {
+    final loadedRooms = await controlRoom.getRooms();
+    rooms.assignAll(loadedRooms);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -75,16 +89,22 @@ class _InicioPageState extends State<InicioPage> {
                 ),
                 SizedBox(
                   height: 2000, // Defina uma altura inicial desejada
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.all(defaultpd),
-                    itemCount: 4, // Defina o número de itens dinamicamente
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: defaultpd),
-                        child: CardRecomendationRoom(size: size),
-                      );
-                    },
+                  child: Obx(
+                    () => ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.all(defaultpd),
+                      itemCount: rooms
+                          .where((room) => room
+                              .isAvailable) // Filtra apenas as salas disponíveis
+                          .length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: defaultpd),
+                          child: CardRecomendationRoom(
+                              size: size, room: rooms[index]),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reserva_pra_mim/modelviews/reserve/reserve_controller.dart';
 import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 import 'package:reserva_pra_mim/views/pages/salas/detail_room.dart';
 import 'package:reserva_pra_mim/views/pages/start/home_page.dart';
@@ -14,6 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Get.put(ControlRoom());
+  Get.put(Control_reserve());
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/login',

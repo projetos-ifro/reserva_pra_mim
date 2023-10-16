@@ -7,6 +7,18 @@ class ControlRoom extends GetxController {
   var isLoading = false.obs;
   List<Room> listOfRooms = [];
 
+  Future<void> reserveRoom(Room room) async {
+    try {
+      final roomReference =
+          FirebaseFirestore.instance.collection('rooms').doc(room.id);
+
+      // Atualize o campo 'isAvailable' para false
+      await roomReference.update({'isAvailable': false});
+    } catch (e) {
+      print('Erro ao reservar a sala: $e');
+    }
+  }
+
   int setPrice(int price, bool value, int addon) {
     if (value) {
       price += addon;

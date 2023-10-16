@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:reserva_pra_mim/models/reserve.dart';
 import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
+import 'package:reserva_pra_mim/modelviews/reserve/reserve_controller.dart';
+import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 
 class Detail_room extends StatefulWidget {
   const Detail_room({super.key});
@@ -14,6 +19,29 @@ class _Detail_roomState extends State<Detail_room> {
   @override
   Widget build(BuildContext context) {
     final room = Get.arguments as Room;
+    final controlReserve = Control_reserve();
+    final controlRoom = ControlRoom();
+
+    void reserveRoom() async {
+      try {
+        Reserve newReserve = Reserve(
+          id: FirebaseFirestore.instance.collection('rooms').doc().id,
+          reservedRoom: room.id,
+          userID: FirebaseAuth.instance.currentUser!.uid,
+          bookingDateTime: DateTime.now(),
+          deliveryDateTime: null,
+          rating: null,
+          finalPrice: 0,
+          delivered: false,
+        );
+
+        await controlReserve.addReserve(newReserve);
+        Get.offNamed('/home');
+      } catch (e) {
+        print('Erro ao salvar a reserva: $e');
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -100,7 +128,10 @@ class _Detail_roomState extends State<Detail_room> {
               Align(
                 alignment: Alignment.center,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    reserveRoom();
+                    controlRoom.reserveRoom(room);
+                  },
                   child: Container(
                     height: 50,
                     width: 250,

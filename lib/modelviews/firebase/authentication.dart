@@ -154,10 +154,10 @@ class Autenticacao {
 
       if (userDoc.exists) {
         final bool isAdmin = userDoc['isAdmin'];
-        return isAdmin;
+        return isAdmin == true;
       }
 
-      return false; // Usuário não encontrado no Firestore.
+      return false;
     } catch (e) {
       print('Erro ao verificar se o usuário é admin: $e');
       return false;

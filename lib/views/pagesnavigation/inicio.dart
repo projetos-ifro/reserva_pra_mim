@@ -45,12 +45,6 @@ class _InicioPageState extends State<InicioPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Create_room()));
-                    },
-                    child: const Text('Teste')),
                 Card_home_search(
                   size: size,
                 ),

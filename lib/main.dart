@@ -6,7 +6,6 @@ import 'package:reserva_pra_mim/views/pages/salas/detail_room.dart';
 import 'package:reserva_pra_mim/views/pages/start/home_page.dart';
 import 'package:reserva_pra_mim/views/pages/start/login_page.dart';
 import 'package:reserva_pra_mim/views/pages/start/logon_page.dart';
-import 'modelviews/firebase/authentication.dart';
 import 'modelviews/firebase/firebase_options.dart';
 
 void main() async {
@@ -14,13 +13,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  Get.put(ControlRoom());
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/login',
     getPages: [
       GetPage(name: '/login', page: () => LoginPage()),
-      GetPage(name: '/logon', page: () =>  LogonPage()),
+      GetPage(name: '/logon', page: () => LogonPage()),
       GetPage(name: '/home', page: () => const HomeScreen()),
       GetPage(name: '/detail', page: () => const Detail_room()),
     ],

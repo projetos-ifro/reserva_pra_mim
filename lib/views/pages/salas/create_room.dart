@@ -175,7 +175,7 @@ class _Create_roomState extends State<Create_room> {
                       _wifi = value ?? false;
                     });
 
-                    price = controlRoom.SetPrice(price, value!, roomWithWifi);
+                    price = controlRoom.setPrice(price, value!, roomWithWifi);
                   },
                 ),
                 CheckboxListTile(
@@ -187,7 +187,7 @@ class _Create_roomState extends State<Create_room> {
                     });
 
                     price =
-                        controlRoom.SetPrice(price, value!, roomWithDataShow);
+                        controlRoom.setPrice(price, value!, roomWithDataShow);
                   },
                 ),
                 CheckboxListTile(
@@ -198,7 +198,7 @@ class _Create_roomState extends State<Create_room> {
                       _soundBox = value ?? false;
                     });
 
-                    price = controlRoom.SetPrice(price, value!, roomWithSound);
+                    price = controlRoom.setPrice(price, value!, roomWithSound);
                   },
                 ),
                 CheckboxListTile(
@@ -209,7 +209,7 @@ class _Create_roomState extends State<Create_room> {
                       _tv = value ?? false;
                     });
 
-                    price = controlRoom.SetPrice(price, value!, roomWithTV);
+                    price = controlRoom.setPrice(price, value!, roomWithTV);
                   },
                 ),
                 const SizedBox(

@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:get/get.dart';
-
 import 'package:reserva_pra_mim/models/room.dart';
 
 class ControlRoom extends GetxController {
@@ -11,9 +8,7 @@ class ControlRoom extends GetxController {
   List<Room> listOfRooms = [];
 
   @override
-  var availableRooms = <Room>[].obs;
-
-  double SetPrice(double price, bool value, double addon) {
+  double setPrice(double price, bool value, double addon) {
     if (value) {
       price += addon;
     } else {

@@ -94,7 +94,9 @@ class _InicioPageState extends State<InicioPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.all(defaultpd),
                       itemCount: rooms
-                          .length, // Defina o número de itens dinamicamente
+                          .where((room) => room
+                              .isAvailable) // Filtra apenas as salas disponíveis
+                          .length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: EdgeInsets.only(bottom: defaultpd),

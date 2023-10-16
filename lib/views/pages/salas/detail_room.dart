@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
-import 'package:reserva_pra_mim/views/widgets/card_addons_room.dart';
 
 class Detail_room extends StatefulWidget {
   const Detail_room({super.key});
@@ -39,6 +38,9 @@ class _Detail_roomState extends State<Detail_room> {
                 'Descrição',
                 style: TextStyle(
                     fontSize: defaultpd * 1.5, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 15,
               ),
               Text(
                 room.description,

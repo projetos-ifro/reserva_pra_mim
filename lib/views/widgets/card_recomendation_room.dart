@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:reserva_pra_mim/models/room.dart';
 import '../../modelviews/constants.dart';
 
 class CardRecomendationRoom extends StatelessWidget {
   const CardRecomendationRoom({
     super.key,
     required this.size,
+    required this.room,
   });
 
   final Size size;
+  final Room room;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +20,11 @@ class CardRecomendationRoom extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Get.toNamed('/detail', arguments: room);
+          },
           child: Container(
+            padding: EdgeInsets.all(defaultpd / 2),
             height: size.height * .15,
             width: size.width,
             decoration: BoxDecoration(
@@ -37,29 +44,30 @@ class CardRecomendationRoom extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Nome da Sala',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: defaultpd,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            width: 80,
-                          ),
-                          FaIcon(
-                            FontAwesomeIcons.heart,
-                            color: Colors.white,
-                            size: defaultpd,
-                          )
-                        ],
+                      SizedBox(
+                        width: size.width * 0.5,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              room.name,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: defaultpd,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            FaIcon(
+                              FontAwesomeIcons.heart,
+                              color: Colors.white,
+                              size: defaultpd,
+                            )
+                          ],
+                        ),
                       ),
-                      const Text(
-                        'Endereço da sala',
-                        style: TextStyle(
+                      Text(
+                        'Capacidade ${room.capacity}',
+                        style: const TextStyle(
                           color: Colors.white70,
                         ),
                       ),
@@ -67,9 +75,9 @@ class CardRecomendationRoom extends StatelessWidget {
                       Container(
                           width: size.width * .5,
                           alignment: Alignment.bottomRight,
-                          child: const Text(
-                            'R\$15,00 / Hr',
-                            style: TextStyle(
+                          child: Text(
+                            'R\$ ${room.pricePerHour} / Hr',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),

@@ -88,7 +88,7 @@ class _InicioPageState extends State<InicioPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 2000, // Defina uma altura inicial desejada
+                  height: 1000, // Defina uma altura inicial desejada
                   child: Obx(
                     () => ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),

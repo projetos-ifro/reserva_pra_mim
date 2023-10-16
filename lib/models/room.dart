@@ -10,7 +10,7 @@ class Room {
   bool withTv;
   bool withSoundBox;
   String roomImage;
-  double pricePerHour;
+  int pricePerHour;
   int capacity;
 
   Room({

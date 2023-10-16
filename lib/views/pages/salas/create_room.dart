@@ -35,7 +35,7 @@ class _Create_roomState extends State<Create_room> {
       withTv: false,
       withSoundBox: false,
       roomImage: '',
-      pricePerHour: 0.0,
+      pricePerHour: 0,
       capacity: 0,
     );
   }
@@ -60,7 +60,7 @@ class _Create_roomState extends State<Create_room> {
     }
   }
 
-  double price = 15; // Preço base
+  int price = 15; // Preço base
 
   @override
   void dispose() {

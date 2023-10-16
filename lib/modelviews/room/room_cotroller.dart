@@ -7,8 +7,7 @@ class ControlRoom extends GetxController {
   var isLoading = false.obs;
   List<Room> listOfRooms = [];
 
-  @override
-  double setPrice(double price, bool value, double addon) {
+  int setPrice(int price, bool value, int addon) {
     if (value) {
       price += addon;
     } else {

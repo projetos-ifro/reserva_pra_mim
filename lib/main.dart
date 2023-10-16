@@ -15,6 +15,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+
+  Get.put(ControlRoom());
+
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/login',

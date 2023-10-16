@@ -3,40 +3,43 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 
-class My_nav_bar extends StatefulWidget {
-  const My_nav_bar({super.key});
+class MyNavigationBar extends StatefulWidget {
+  final int selectedIndex;
+  final Function(int) onTabChange;
+
+  MyNavigationBar({required this.selectedIndex, required this.onTabChange});
 
   @override
-  State<My_nav_bar> createState() => _My_nav_barState();
+  State<MyNavigationBar> createState() => _MyNavigationBarState();
 }
 
-class _My_nav_barState extends State<My_nav_bar> {
+class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return GNav(
-        tabMargin: EdgeInsets.all(defaultpd / 2),
-        iconSize: defaultpd,
-        activeColor: bgColor,
-        color: Colors.white,
-        backgroundColor: bgColor,
-        tabBackgroundColor: Colors.white,
-        gap: 8,
-        onTabChange: (index) {
-          print(index);
-        },
-        tabs: const [
-          GButton(
-            icon: FontAwesomeIcons.ticket,
-            text: 'Progresso',
-          ),
-          GButton(
-            icon: FontAwesomeIcons.house,
-            text: 'Início',
-          ),
-          GButton(
-            icon: FontAwesomeIcons.listCheck,
-            text: 'Histórico',
-          ),
-        ]);
+      tabMargin: EdgeInsets.all(defaultpd / 2),
+      iconSize: defaultpd,
+      activeColor: bgColor,
+      color: Colors.white,
+      backgroundColor: bgColor,
+      tabBackgroundColor: Colors.white,
+      gap: 8,
+      onTabChange: widget.onTabChange,
+      tabs: const [
+        GButton(
+          icon: FontAwesomeIcons.ticket,
+          text: 'Progresso',
+        ),
+        GButton(
+          icon: FontAwesomeIcons.house,
+          text: 'Início',
+        ),
+        GButton(
+          icon: FontAwesomeIcons.listCheck,
+          text: 'Histórico',
+        ),
+      ],
+      selectedIndex: widget.selectedIndex,
+    );
   }
 }

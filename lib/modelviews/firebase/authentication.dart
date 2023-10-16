@@ -22,6 +22,8 @@ class LoginEmaileSenha {
     try {
       final credencial = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _controladorEmail.text, password: _controladorSenha.text);
+      _controladorEmail.clear();
+      _controladorSenha.clear();
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
     } on FirebaseAuthException catch (e) {
@@ -49,8 +51,7 @@ class LoginEmaileSenha {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('E-mail enviado'),
-          content: const Text(
-              'Verifique seu e-mail para redefinir sua senha.'),
+          content: const Text('Verifique seu e-mail para redefinir sua senha.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -66,14 +67,16 @@ class LoginEmaileSenha {
       print(e.message);
       print(e.code);
       if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Senha incorreta')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Senha incorreta')));
       } else if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Nenhuma conta com este e-mail foi encontrada. Considere se registrar.')));
+            content: Text(
+                'Nenhuma conta com este e-mail foi encontrada. Considere se registrar.')));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erro ao solicitar a redefinição de senha')),
+          const SnackBar(
+              content: Text('Erro ao solicitar a redefinição de senha')),
         );
       }
     } catch (e) {
@@ -89,12 +92,14 @@ class RegisterEmailSenha {
   final TextEditingController _controladorNome = TextEditingController();
   final TextEditingController _controladorEmail = TextEditingController();
   final TextEditingController _controladorSenha = TextEditingController();
-  final TextEditingController _controladorConfirmarSenha = TextEditingController();
+  final TextEditingController _controladorConfirmarSenha =
+      TextEditingController();
 
   TextEditingController get controladorNome => _controladorNome;
   TextEditingController get controladorEmail => _controladorEmail;
   TextEditingController get controladorSenha => _controladorSenha;
-  TextEditingController get controladorConfirmarSenha => _controladorConfirmarSenha;
+  TextEditingController get controladorConfirmarSenha =>
+      _controladorConfirmarSenha;
 
   String? validateEmail(String? value) {
     final value = _controladorEmail.text;
@@ -149,7 +154,8 @@ class RegisterEmailSenha {
       );
       return;
     }
-    final passwordMatchError = validatePasswordMatch(_controladorConfirmarSenha.text);
+    final passwordMatchError =
+        validatePasswordMatch(_controladorConfirmarSenha.text);
     if (passwordMatchError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(passwordMatchError)),
@@ -162,6 +168,10 @@ class RegisterEmailSenha {
               email: _controladorEmail.text, password: _controladorSenha.text);
 
       await updateUserName(_controladorNome.text);
+      _controladorEmail.clear();
+      _controladorSenha.clear();
+      _controladorConfirmarSenha.clear();
+      _controladorNome.clear();
 
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
@@ -184,7 +194,7 @@ class Logout {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.of(context)
-          .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     } catch (e) {}
   }
 }

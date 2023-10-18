@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
-import 'package:reserva_pra_mim/views/widgets/card_home_search.dart';
 import 'package:reserva_pra_mim/views/widgets/card_popular_room.dart';
 import '../widgets/card_recomendation_room.dart';
 
@@ -79,25 +78,23 @@ class _InicioPageState extends State<InicioPage> {
                 ),
                 SizedBox(
                   height: 1000, // Defina uma altura inicial desejada
-                  child: (rooms.isEmpty)
-                      ? const Center(child: Text('Nada para mostrar aqui'))
-                      : Obx(
-                          () => ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.all(defaultpd),
-                            itemCount: rooms
-                                .where((room) => room
-                                    .isAvailable) // Filtra apenas as salas disponíveis
-                                .length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: defaultpd),
-                                child: CardRecomendationRoom(
-                                    size: size, room: rooms[index]),
-                              );
-                            },
-                          ),
-                        ),
+                  child: Obx(
+                    () => ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.all(defaultpd),
+                      itemCount: rooms
+                          .where((room) => room
+                              .isAvailable) // Filtra apenas as salas disponíveis
+                          .length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: defaultpd),
+                          child: CardRecomendationRoom(
+                              size: size, room: rooms[index]),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),

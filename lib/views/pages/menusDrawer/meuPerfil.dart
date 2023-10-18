@@ -59,8 +59,8 @@ class _MeuPerfilPageState extends State<MeuPerfilPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Autenticacao().updateUser(context,
-                    nameController.text, emailController.text);
+                Autenticacao().updateUser(
+                    context, nameController.text, emailController.text);
               },
               child: const Text("Salvar"),
             ),

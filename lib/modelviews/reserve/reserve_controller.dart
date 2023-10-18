@@ -112,4 +112,13 @@ class Control_reserve extends GetxController {
       print('Erro ao atualizar a reserva: $e');
     }
   }
+
+  double calcPrice(DateTime reserveDateTime, int price) {
+    final currentTime = DateTime.now();
+    final duration = currentTime.difference(reserveDateTime);
+    final hoursReserved = duration.inHours;
+    final finalPrice = hoursReserved * price;
+    print('Preço final: ${finalPrice.toDouble()}');
+    return finalPrice.toDouble();
+  }
 }

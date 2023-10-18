@@ -14,7 +14,7 @@ class Autenticacao {
       String password, String confirmPassword, bool isAdmin) async {
     try {
       final emailRegex =
-      RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+          RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
       if (!emailRegex.hasMatch(email)) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -30,8 +30,8 @@ class Autenticacao {
         return null;
       }
 
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -54,8 +54,8 @@ class Autenticacao {
     }
   }
 
-  Future<void> saveUserRegister(String userId, String name, String email,
-      bool isAdmin) async {
+  Future<void> saveUserRegister(
+      String userId, String name, String email, bool isAdmin) async {
     try {
       await _db.collection("users").doc(userId).set({
         'name': name,
@@ -69,8 +69,8 @@ class Autenticacao {
     }
   }
 
-  Future<void> updateUser(BuildContext context, String name,
-      String email) async {
+  Future<void> updateUser(
+      BuildContext context, String name, String email) async {
     try {
       final User? currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
@@ -119,12 +119,11 @@ class Autenticacao {
     }
   }
 
-
-  Future<bool> loginUser(BuildContext context, String email,
-      String password) async {
+  Future<bool> loginUser(
+      BuildContext context, String email, String password) async {
     try {
-      final UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -178,20 +177,18 @@ class Autenticacao {
 
       showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: const Text('E-mail enviado'),
-              content: const Text(
-                  'Verifique seu e-mail para redefinir sua senha.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
+        builder: (context) => AlertDialog(
+          title: const Text('E-mail enviado'),
+          content: const Text('Verifique seu e-mail para redefinir sua senha.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
             ),
+          ],
+        ),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -214,7 +211,7 @@ class Autenticacao {
   Future<bool> isUserAdmin(String userId) async {
     try {
       final DocumentSnapshot userDoc =
-      await _db.collection("users").doc(userId).get();
+          await _db.collection("users").doc(userId).get();
 
       if (userDoc.exists) {
         final bool isAdmin = userDoc['isAdmin'];
@@ -266,8 +263,4 @@ class Autenticacao {
       return {};
     }
   }
-
-
-
-
 }

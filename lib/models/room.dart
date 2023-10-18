@@ -27,6 +27,22 @@ class Room {
     required this.capacity,
   });
 
+  static Room fromMap(Map<String, dynamic> data) {
+    return Room(
+      id: data['id'],
+      isAvailable: data['isAvailable'],
+      name: data['name'],
+      description: data['description'],
+      withDatashow: data['withDatashow'],
+      withWifi: data['withWifi'],
+      withTv: data['withTv'],
+      withSoundBox: data['withSoundBox'],
+      roomImage: data['roomImage'],
+      pricePerHour: data['pricePerHour'],
+      capacity: data['capacity'],
+    );
+  }
+
   factory Room.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return Room(

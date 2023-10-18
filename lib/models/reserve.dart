@@ -36,12 +36,16 @@ class Reserve {
     };
   }
 
-  factory Reserve.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
+  static Reserve fromMap(Map<String, dynamic> data) {
+    Room? room;
+
+    if (data['reservedRoom'] != null) {
+      room = Room.fromMap(data['reservedRoom']);
+    }
+
     return Reserve(
       id: data['id'],
-      reservedRoom: data['reservedRoom'], // Obtenha o documento referenciado
+      reservedRoom: room!.id,
       bookingDateTime: data['bookingDateTime'].toDate(),
       deliveryDateTime: data['deliveryDateTime'] != null
           ? data['deliveryDateTime'].toDate()
@@ -53,19 +57,55 @@ class Reserve {
     );
   }
 
-  Future<Room> getRoom() async {
-    // Obter a referência para o documento da sala
-    DocumentReference roomRef =
-        FirebaseFirestore.instance.collection('rooms').doc(reservedRoom);
+  static Future<Reserve> fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) async {
+    Room? room;
+    final data = snapshot.data() as Map<String, dynamic>;
 
-    // Obter o snapshot do documento da sala
-    DocumentSnapshot<Object?> roomSnapshot = await roomRef.get();
+    await FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(data['reservedRoom'])
+        .get()
+        .then((DocumentSnapshot docSnapshot) {
+      var id = docSnapshot.id;
+      var data = docSnapshot.data() as Map<String, dynamic>;
+      var isAvailable = data['isAvailable'];
+      var name = data['name'];
+      var description = data['description'];
+      var withDatashow = data['withDatashow'];
+      var withWifi = data['withWifi'];
+      var withTv = data['withTv'];
+      var withSoundBox = data['withSoundBox'];
+      var roomImage = data['roomImage'];
+      var pricePerHour = data['pricePerHour'];
+      var capacity = data['capacity'];
 
-    // Converter o objeto DocumentSnapshot<Object?> para o tipo DocumentSnapshot<Map<String, dynamic>>
-    DocumentSnapshot<Map<String, dynamic>> roomSnapshotTyped =
-        roomSnapshot as DocumentSnapshot<Map<String, dynamic>>;
+      room = Room(
+        id: id,
+        isAvailable: isAvailable,
+        name: name,
+        description: description,
+        withDatashow: withDatashow,
+        withWifi: withWifi,
+        withTv: withTv,
+        withSoundBox: withSoundBox,
+        roomImage: roomImage,
+        pricePerHour: pricePerHour,
+        capacity: capacity,
+      );
+    });
 
-    // Criar um objeto Room a partir do snapshot do documento da sala
-    return Room.fromFirestore(roomSnapshotTyped);
+    return Reserve(
+      id: data['id'],
+      reservedRoom: room!.id,
+      bookingDateTime: data['bookingDateTime'].toDate(),
+      deliveryDateTime: data['deliveryDateTime'] != null
+          ? data['deliveryDateTime'].toDate()
+          : null,
+      rating: data['rating'],
+      finalPrice: data['finalPrice'],
+      userID: data['userID'],
+      delivered: data['delivered'],
+    );
   }
 }

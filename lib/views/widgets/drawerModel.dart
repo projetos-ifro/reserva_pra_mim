@@ -31,7 +31,7 @@ class CustomDrawer extends StatelessWidget {
                           radius: 32,
                           child: Icon(
                             Icons.person,
-                            color: Colors.grey,
+                            color: Colors.white,
                             size: 40,
                           ),
                         )
@@ -44,8 +44,12 @@ class CustomDrawer extends StatelessWidget {
                       children: [
                         Text(userName,
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text(userEmail, style: const TextStyle(fontSize: 14)),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        Text(userEmail,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14)),
                       ],
                     ),
                   ],

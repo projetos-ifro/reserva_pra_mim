@@ -22,10 +22,11 @@ class _Detail_roomState extends State<Detail_room> {
     final controlReserve = Control_reserve();
     final controlRoom = ControlRoom();
 
-    void reserveRoom() async {
+    void reservedRoom() async {
+      var success = true;
       try {
         Reserve newReserve = Reserve(
-          id: FirebaseFirestore.instance.collection('rooms').doc().id,
+          id: FirebaseFirestore.instance.collection('reserves').doc().id,
           reservedRoom: room.id,
           userID: FirebaseAuth.instance.currentUser!.uid,
           bookingDateTime: DateTime.now(),
@@ -36,9 +37,15 @@ class _Detail_roomState extends State<Detail_room> {
         );
 
         await controlReserve.addReserve(newReserve);
+
+        print('Nome: ${room.name}');
         Get.offNamed('/home');
       } catch (e) {
         print('Erro ao salvar a reserva: $e');
+        success = false;
+      }
+      if (success) {
+        controlRoom.reserveRoom(room);
       }
     }
 
@@ -129,8 +136,7 @@ class _Detail_roomState extends State<Detail_room> {
                 alignment: Alignment.center,
                 child: GestureDetector(
                   onTap: () {
-                    reserveRoom();
-                    controlRoom.reserveRoom(room);
+                    reservedRoom();
                   },
                   child: Container(
                     height: 50,

@@ -1,7 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+
+import '../../models/user.dart';
 
 class Autenticacao {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -14,16 +19,21 @@ class Autenticacao {
       RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
 
       if (!emailRegex.hasMatch(email)) {
-        print('Email inválido');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email inválido')),
+        );
         return null;
       }
 
       if (password != confirmPassword) {
-        print('As senhas não coincidem');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('As senhas não coincidem')),
+        );
         return null;
       }
 
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -39,13 +49,15 @@ class Autenticacao {
 
       return user;
     } catch (e) {
-      print('Erro ao criar a conta: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao criar a conta')),
+      );
       return null;
     }
   }
 
-  Future<void> saveUserRegister(
-      String userId, String name, String email, bool isAdmin) async {
+  Future<void> saveUserRegister(String userId, String name, String email,
+      bool isAdmin) async {
     try {
       await _db.collection("users").doc(userId).set({
         'name': name,
@@ -53,28 +65,68 @@ class Autenticacao {
         'isAdmin': false,
       });
     } catch (e) {
-      print('Erro ao cadastrar o usuário no banco de dados: $e');
+      if (kDebugMode) {
+        print('Erro ao cadastrar o usuário no banco de dados: $e');
+      }
     }
   }
 
-  Future<void> updateUser(String name, String email) async {
+  Future<void> updateUser(BuildContext context, String name,
+      String email) async {
     try {
       final User? currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         await currentUser.updateDisplayName(name);
 
         if (email != currentUser.email) {
-          await currentUser.updateEmail(email);
+          final emailVerified = currentUser.emailVerified;
+          if (!emailVerified) {
+            await currentUser.sendEmailVerification();
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Email de Verificação Enviado'),
+                  content: Text(
+                      'Um email de verificação foi enviado para o novo endereço de email. Por favor, verifique seu email.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            await currentUser.updateEmail(email);
+            await _db.collection("users").doc(currentUser.uid).update({
+              'name': name,
+              'email': email,
+            });
+          }
         }
       }
     } catch (e) {
-      print('Erro ao atualizar os dados: $e');
+      if (kDebugMode) {
+        print('Erro ao atualizar os dados: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao atualizar os dados: $e'),
+        ),
+      );
     }
   }
 
-  Future<bool> loginUser(BuildContext context, String email, String password) async {
+
+  Future<bool> loginUser(BuildContext context, String email,
+      String password) async {
     try {
-      final UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -82,20 +134,28 @@ class Autenticacao {
       final User? user = userCredential.user;
 
       if (user != null) {
-        print('Login efetuado com sucesso');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login efetuado com sucesso')),
+        );
         Get.offAllNamed('/home');
         return true;
       }
       return false;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'auth/wrong-password') {
-        print('Login ou senha incorretos');
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login ou senha incorretos')),
+        );
       } else {
-        print('Opa, algo de errado aconteceu...');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Opa, algo de errado aconteceu...')),
+        );
       }
       return false;
     } catch (e) {
-      print('Erro: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro desconhecido')),
+      );
       return false;
     }
   }
@@ -103,10 +163,14 @@ class Autenticacao {
   Future<void> logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      print('Logout efetuado com sucesso');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Deslogado com sucesso')),
+      );
       Get.offAllNamed('/login'); // Redireciona para a tela de login
     } catch (e) {
-      print('Erro ao fazer logout: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao deslogar')),
+      );
     }
   }
 
@@ -116,18 +180,20 @@ class Autenticacao {
 
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('E-mail enviado'),
-          content: const Text('Verifique seu e-mail para redefinir sua senha.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
+        builder: (context) =>
+            AlertDialog(
+              title: const Text('E-mail enviado'),
+              content: const Text(
+                  'Verifique seu e-mail para redefinir sua senha.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -150,7 +216,7 @@ class Autenticacao {
   Future<bool> isUserAdmin(String userId) async {
     try {
       final DocumentSnapshot userDoc =
-          await _db.collection("users").doc(userId).get();
+      await _db.collection("users").doc(userId).get();
 
       if (userDoc.exists) {
         final bool isAdmin = userDoc['isAdmin'];
@@ -159,8 +225,51 @@ class Autenticacao {
 
       return false;
     } catch (e) {
-      print('Erro ao verificar se o usuário é admin: $e');
+      if (kDebugMode) {
+        print('Erro ao verificar se o usuário é admin: $e');
+      }
       return false;
     }
   }
+
+  Future<List<String>> loadAdminIds() async {
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        final adminsQuery = await _db
+            .collection('users')
+            .where('isAdmin', isEqualTo: true)
+            .get();
+
+        final adminDocs = adminsQuery.docs;
+        final adminIds = adminDocs.map((adminDoc) => adminDoc.id).toList();
+
+        return adminIds;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao carregar os IDs dos administradores: $e');
+      }
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> loadUserInfo(String userId) async {
+    try {
+      final userDoc = await _db.collection('users').doc(userId).get();
+      return userDoc.data() as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao carregar informações do usuário: $e');
+      }
+      return {};
+    }
+  }
+
+
+
+
 }

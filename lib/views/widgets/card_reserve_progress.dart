@@ -27,10 +27,14 @@ class _CardReserveProgressState extends State<CardReserveProgress> {
   final controlRoom = Get.find<ControlRoom>();
   final controlReserve = Get.find<Control_reserve>();
   Room? room;
+  double? price;
+
   @override
   void initState() {
     super.initState();
+
     loadRoomData();
+    setState(() {});
   }
 
   Future<void> loadRoomData() async {
@@ -96,10 +100,10 @@ class _CardReserveProgressState extends State<CardReserveProgress> {
                         style: const TextStyle(color: Colors.white),
                       ),
                       Container(
-                          width: widget.size.width * 0.55,
+                          width: widget.size.width * 0.50,
                           alignment: Alignment.bottomRight,
                           child: Text(
-                            'R\$ ${room?.pricePerHour} / Hr',
+                            'R\$ ${room!.pricePerHour} / Hr',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

@@ -13,7 +13,6 @@ class Create_room extends StatefulWidget {
 }
 
 class _Create_roomState extends State<Create_room> {
-  TextEditingController _textHomeSearch = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeSalaController = TextEditingController();
   final TextEditingController _descricaoController = TextEditingController();

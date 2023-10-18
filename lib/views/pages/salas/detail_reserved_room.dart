@@ -19,6 +19,7 @@ class _Detail_reserved_roomState extends State<Detail_reserved_room> {
   final controlReserve = Get.find<Control_reserve>();
   final reserve = Get.arguments as Reserve;
   Room? room;
+
   @override
   void initState() {
     super.initState();
@@ -35,12 +36,8 @@ class _Detail_reserved_roomState extends State<Detail_reserved_room> {
     try {
       reservation.deliveryDateTime = DateTime.now();
       reservation.delivered = true;
-      final currentTime = DateTime.now();
-      final duration =
-          reservation.deliveryDateTime!.difference(reservation.bookingDateTime);
-      final hoursReserved = duration.inHours;
-      final finalPrice = hoursReserved * room!.pricePerHour;
-      reservation.finalPrice = finalPrice.toDouble();
+      reservation.finalPrice = controlReserve.calcPrice(
+          reservation.bookingDateTime, room!.pricePerHour);
       await controlReserve.updateReserve(reservation);
       controlRoom.returnRoom(room);
       print('Reserva completada com sucesso');
@@ -131,6 +128,10 @@ class _Detail_reserved_roomState extends State<Detail_reserved_room> {
                     fontSize: defaultpd * 1.5,
                     fontWeight: FontWeight.bold),
               ),
+              Text(
+                'Há ${controlReserve.calculateTimePassed(reserve.bookingDateTime)}',
+                style: const TextStyle(color: Colors.white),
+              ),
               const SizedBox(
                 height: 120,
               ),
@@ -139,7 +140,7 @@ class _Detail_reserved_roomState extends State<Detail_reserved_room> {
                 child: GestureDetector(
                   onTap: () {
                     completeReservationAndReturnRoom(reserve, room);
-                    Get.toNamed('/history');
+                    Get.toNamed('/home');
                   },
                   child: Container(
                     height: 50,

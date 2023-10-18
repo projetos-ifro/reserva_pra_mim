@@ -232,7 +232,7 @@ class Autenticacao {
     }
   }
 
-  Future<List<Map<String, dynamic>>> loadAdminIds() async {
+  Future<List<String>> loadAdminIds() async {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -243,20 +243,9 @@ class Autenticacao {
             .get();
 
         final adminDocs = adminsQuery.docs;
-        final adminInfo = <Map<String, dynamic>>[];
+        final adminIds = adminDocs.map((adminDoc) => adminDoc.id).toList();
 
-        for (final adminDoc in adminDocs) {
-          final adminId = adminDoc.id;
-          final adminData = adminDoc.data() as Map<String, dynamic>;
-          final userInfo = await loadUserInfo(adminId);
-
-          if (userInfo != null) {
-            adminInfo.add(userInfo);
-          }
-        }
-
-        // Agora você tem as informações completas dos administradores
-        return adminInfo;
+        return adminIds;
       } else {
         return [];
       }
@@ -268,18 +257,18 @@ class Autenticacao {
     }
   }
 
-
-  Future<Map<String, dynamic>?> loadUserInfo(String userId) async {
+  Future<Map<String, dynamic>> loadUserInfo(String userId) async {
     try {
       final userDoc = await _db.collection('users').doc(userId).get();
-      return userDoc.data() as Map<String, dynamic>?;
+      return userDoc.data() as Map<String, dynamic>? ?? {};
     } catch (e) {
       if (kDebugMode) {
         print('Erro ao carregar informações do usuário: $e');
       }
-      return null;
+      return {};
     }
   }
+
 
 
 

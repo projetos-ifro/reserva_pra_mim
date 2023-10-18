@@ -41,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: CustomDrawer(isAdmin, userName, userEmail),
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar()
+      ,
       body: viewModel.buildPage(_selectedIndex),
       bottomNavigationBar: MyNavigationBar(
         selectedIndex: _selectedIndex,

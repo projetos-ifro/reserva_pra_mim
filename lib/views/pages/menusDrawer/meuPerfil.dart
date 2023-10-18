@@ -27,7 +27,10 @@ class _MeuPerfilPageState extends State<MeuPerfilPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Meu Perfil"),
+          centerTitle: true,
+          backgroundColor: Color(0xFF184848),
+          title: const Text('Meu Perfil', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+          iconTheme: IconThemeData(color: Colors.white)
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

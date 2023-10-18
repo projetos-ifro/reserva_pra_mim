@@ -1,34 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../modelviews/firebase/authentication.dart';
 
 class AdminPage extends StatefulWidget {
+  const AdminPage({super.key});
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final Autenticacao _autenticacao = Autenticacao();
-
   List<String> _adminIds = [];
-  List<Map<String, dynamic>> _adminInfo = [];
 
   @override
   void initState() {
     super.initState();
-    loadAdmins();
+    _loadData();
   }
 
-  Future<void> loadAdmins() async {
-    final adminData = await _autenticacao.loadAdminIds();
+  Future<void> _loadData() async {
+    final adminIds = await _autenticacao.loadAdminIds();
     setState(() {
-      _adminInfo = adminData; // Preencha _adminInfo com os dados retornados
-      _adminIds = adminData.map((admin) => admin['id'] as String).toList(); // Extraia os IDs
+      _adminIds = adminIds;
     });
   }
 
@@ -36,85 +30,105 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Página de Administradores'),
+        centerTitle: true,
+        backgroundColor: Color(0xFF184848),
+        title: const Text('Administradores', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+        iconTheme: IconThemeData(color: Colors.white), // Define a cor do ícone como branca
       ),
-      body: FutureBuilder(
-        future: loadAdmins(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final adminIds = snapshot.data as List<Map<String, dynamic>>;
-
-            return ListView.builder(
-              itemCount: adminIds.length,
-              itemBuilder: (context, index) {
-                final adminId = adminIds[index]['id'] as String;
-                final userInfo = adminIds[index];
-
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      // Coluna esquerda
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 40, // Substitua pela imagem do usuário
-                          ),
-                          Icon(
-                            Icons.person, // Substitua pelo ícone apropriado
-                            color: Colors.grey, // Cor do ícone
-                            size: 40, // Tamanho do ícone
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 16), // Espaço entre as colunas
-                      // Coluna direita
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (userInfo != null) ...[
-                            Text(
-                              userInfo['name'] as String? ?? 'Nome não disponível',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20,30,20,30),
+        child: _adminIds.isNotEmpty
+            ? ListView.builder(
+          itemCount: _adminIds.length,
+          itemBuilder: (context, index) {
+            final adminId = _adminIds[index];
+            return Column(
+              children: [
+                FutureBuilder<Map<String, dynamic>>(
+                  future: _autenticacao.loadUserInfo(adminId),
+                  builder: (context, userSnapshot) {
+                    if (userSnapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Text(""),
+                      );
+                    } else if (userSnapshot.hasData) {
+                      final userInfo = userSnapshot.data ?? {};
+                      return Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFC8C8C8), // Cor de fundo cinza
+                          borderRadius: BorderRadius.circular(8.0), // Borda arredondada
+                        ),
+                        child: Row(
+                          children: [
+                            // Coluna esquerda
+                            Stack(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 40, // Substitua pela imagem do usuário
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Icon(
+                                    Icons.person, // Substitua pelo ícone apropriado
+                                    color: Colors.grey, // Cor do ícone
+                                    size: 40, // Tamanho do ícone
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              userInfo['email'] as String? ?? 'Email não disponível',
-                              style: TextStyle(fontSize: 14),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 8),
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                'Admin',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                            const SizedBox(width: 16), // Espaço entre as colunas
+                            // Coluna direita
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userInfo['name'] as String? ?? 'Nome não disponível',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  userInfo['email'] as String? ?? 'Email não disponível',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    'Admin',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                        ),
+                      );
+                    } else if (userSnapshot.hasError) {
+                      return Text('Erro ao carregar informações do usuário: ${userSnapshot.error}');
+                    } else {
+                      return Container(); // Exibe um contêiner vazio enquanto carrega
+                    }
+                  },
+                ),
+                const SizedBox(height: 16), // Espaçamento entre os usuários
+              ],
             );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Erro ao carregar os administradores: ${snapshot.error}'),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+          },
+        )
+            : const Center(
+          child: Text('Nenhum administrador disponível.'),
+        ),
       ),
     );
   }

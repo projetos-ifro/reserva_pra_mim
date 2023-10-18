@@ -31,7 +31,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 color: Colors.white,
               ),
             ),
-            centerTitle: true,
+            centerTitle: true, iconTheme: IconThemeData(color: Colors.white)
+
           );
         } else if (snapshot.hasError) {
           return AppBar(

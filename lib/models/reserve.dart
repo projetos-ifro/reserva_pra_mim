@@ -59,8 +59,24 @@ class Reserve {
 
   static Future<Reserve> fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot) async {
-    Room? room;
     final data = snapshot.data() as Map<String, dynamic>;
+    String roomId = data['reservedRoom'];
+    Room? room;
+
+    print("Data from Firestore: $data");
+
+
+    if (roomId != null) {
+      DocumentSnapshot roomSnapshot =
+      await FirebaseFirestore.instance.collection('rooms').doc(roomId).get();
+
+      if (roomSnapshot.exists) {
+        var roomData = roomSnapshot.data() as Map<String, dynamic>;
+        room = Room.fromMap(roomData);
+      }
+    }
+
+    print("Data from Firestore: $data");
 
     await FirebaseFirestore.instance
         .collection('rooms')
@@ -97,7 +113,7 @@ class Reserve {
 
     return Reserve(
       id: data['id'],
-      reservedRoom: room!.id,
+      reservedRoom: roomId,
       bookingDateTime: data['bookingDateTime'].toDate(),
       deliveryDateTime: data['deliveryDateTime'] != null
           ? data['deliveryDateTime'].toDate()

@@ -6,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-import '../../models/user.dart';
-
 class Autenticacao {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -86,15 +84,15 @@ class Autenticacao {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Email de Verificação Enviado'),
-                  content: Text(
+                  title: const Text('Email de Verificação Enviado'),
+                  content: const Text(
                       'Um email de verificação foi enviado para o novo endereço de email. Por favor, verifique seu email.'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );

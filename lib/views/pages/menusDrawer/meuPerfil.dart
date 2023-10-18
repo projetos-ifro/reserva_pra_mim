@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../modelviews/firebase/authentication.dart';
 
 class MeuPerfilPage extends StatefulWidget {
+  const MeuPerfilPage({super.key});
+
   @override
   _MeuPerfilPageState createState() => _MeuPerfilPageState();
 }
@@ -28,15 +30,15 @@ class _MeuPerfilPageState extends State<MeuPerfilPage> {
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Color(0xFF184848),
+          backgroundColor: const Color(0xFF184848),
           title: const Text('Meu Perfil', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-          iconTheme: IconThemeData(color: Colors.white)
+          iconTheme: const IconThemeData(color: Colors.white)
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey, // Cor de fundo da imagem
               child: Icon(
@@ -45,22 +47,22 @@ class _MeuPerfilPageState extends State<MeuPerfilPage> {
                 color: Colors.white, // Cor do ícone
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: nameController,
-              decoration: InputDecoration(labelText: "Nome"),
+              decoration: const InputDecoration(labelText: "Nome"),
             ),
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: const InputDecoration(labelText: "Email"),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Autenticacao().updateUser(context,
                     nameController.text, emailController.text);
               },
-              child: Text("Salvar"),
+              child: const Text("Salvar"),
             ),
           ],
         ),

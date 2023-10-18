@@ -8,11 +8,22 @@ class Control_reserve extends GetxController {
   var isLoading = false.obs;
 
   Future<void> addReserve(Reserve reserve) async {
+    final user = FirebaseAuth.instance.currentUser; // Obtenha o usuário autenticado
+    if (user == null) {
+      // O usuário não está autenticado, trate conforme desejado.
+      print("Você não está autenticado. Faça o login para adicionar uma reserva.");
+      return;
+    }
+
     try {
       isLoading(true);
+      // Adicione a reserva com o ID do usuário
       await FirebaseFirestore.instance
           .collection('reserves')
-          .add(reserve.toMap());
+          .add({
+        ...reserve.toMap(),
+        'userID': user.uid,
+      });
     } catch (e) {
       print("Erro ao tentar adicionar a reserva: $e");
     } finally {
@@ -20,6 +31,7 @@ class Control_reserve extends GetxController {
       Get.back();
     }
   }
+
 
   Future<List<Reserve>> getActiveUserReservations() async {
     try {

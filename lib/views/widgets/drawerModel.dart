@@ -15,12 +15,12 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFFE7E7E7),
+        color: const Color(0xFFE7E7E7),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             Container(
-              color: Color(0xFF007878),
+              color: const Color(0xFF007878),
               height: 120,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 35, 10, 20),
@@ -63,32 +63,32 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Meu Perfil'),
               onTap: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MeuPerfilPage()));
+                    MaterialPageRoute(builder: (context) => const MeuPerfilPage()));
               },
             ),
             if (isAdmin)
-              ListTile(
-                title: const Text('Opções de Administrador',
+              const ListTile(
+                title: Text('Opções de Administrador',
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             if (isAdmin)
               ListTile(
-                contentPadding: EdgeInsets.only(
+                contentPadding: const EdgeInsets.only(
                     left: 32), // Ajuste o valor conforme necessário
                 title: const Text('Adicionar Sala'),
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Create_room()));
+                      MaterialPageRoute(builder: (context) => const Create_room()));
                 },
               ),
             if (isAdmin)
               ListTile(
-                contentPadding: EdgeInsets.only(
+                contentPadding: const EdgeInsets.only(
                     left: 32), // Ajuste o valor conforme necessário
                 title: const Text('Admins'),
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AdminPage()));
+                      MaterialPageRoute(builder: (context) => const AdminPage()));
                 },
               ),
           ],

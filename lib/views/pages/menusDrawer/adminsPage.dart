@@ -31,9 +31,9 @@ class _AdminPageState extends State<AdminPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xFF184848),
+        backgroundColor: const Color(0xFF184848),
         title: const Text('Administradores', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white), // Define a cor do ícone como branca
+        iconTheme: const IconThemeData(color: Colors.white), // Define a cor do ícone como branca
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20,30,20,30),
@@ -49,20 +49,20 @@ class _AdminPageState extends State<AdminPage> {
                   builder: (context, userSnapshot) {
                     if (userSnapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
-                        child: Text(""),
+                        child: Text(" "),
                       );
                     } else if (userSnapshot.hasData) {
                       final userInfo = userSnapshot.data ?? {};
                       return Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
-                          color: Color(0xFFC8C8C8), // Cor de fundo cinza
+                          color: const Color(0xFFC8C8C8), // Cor de fundo cinza
                           borderRadius: BorderRadius.circular(8.0), // Borda arredondada
                         ),
                         child: Row(
                           children: [
                             // Coluna esquerda
-                            Stack(
+                            const Stack(
                               children: [
                                 CircleAvatar(
                                   backgroundColor: Colors.white,

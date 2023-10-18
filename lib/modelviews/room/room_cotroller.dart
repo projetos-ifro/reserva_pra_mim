@@ -40,6 +40,22 @@ class ControlRoom extends GetxController {
     }
   }
 
+  Future<Room> getRoomById(String reservedRoomId) async {
+    // Obter uma referência para a coleção de salas no Firebase Firestore
+    final roomsCollection = FirebaseFirestore.instance.collection('rooms');
+
+    // Obter a sala com o id especificado
+    final roomDocument = await roomsCollection.doc(reservedRoomId).get();
+
+    // Verificar se a sala existe
+    if (roomDocument == null) {
+      throw Exception('Sala não encontrada');
+    }
+
+    // Converter a sala em um objeto Room
+    return Room.fromFirestore(roomDocument);
+  }
+
   Future<List<Room>> getRooms() async {
     try {
       QuerySnapshot querySnapshot = await firestore.collection('rooms').get();

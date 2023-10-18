@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reserva_pra_mim/models/reserve.dart';
 import 'package:reserva_pra_mim/models/room.dart';
+import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 
 class Control_reserve extends GetxController {
   final firestore = FirebaseFirestore.instance;
@@ -32,63 +33,34 @@ class Control_reserve extends GetxController {
 
       QuerySnapshot querySnapshot = await firestore
           .collection('reserves')
-          .where('userID',
-              isEqualTo: user.uid) // Filtre pelo ID do usuário logado
-          .where('delivered',
-              isEqualTo: false) // Filtre pelo campo 'delivered' igual a false
+          .where('userID', isEqualTo: user.uid)
+          .where('delivered', isEqualTo: false)
           .get();
 
       List<Reserve> reserves = [];
 
-      Future<List<Reserve>> getActiveUserReservations() async {
-        try {
-          final user = FirebaseAuth.instance.currentUser;
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        var data = docSnapshot.data() as Map<String, dynamic>;
 
-          if (user == null) {
-            return []; // Retorna uma lista vazia se o usuário não estiver autenticado
-          }
+        // Converta os objetos Timestamp em DateTime
+        DateTime bookingDateTime =
+            (data['bookingDateTime'] as Timestamp).toDate();
+        DateTime? deliveryDateTime = data['deliveryDateTime'] != null
+            ? (data['deliveryDateTime'] as Timestamp).toDate()
+            : null;
 
-          QuerySnapshot querySnapshot = await firestore
-              .collection('reserves')
-              .where('userID',
-                  isEqualTo: user.uid) // Filtre pelo ID do usuário logado
-              .where('delivered',
-                  isEqualTo:
-                      false) // Filtre pelo campo 'delivered' igual a false
-              .get();
-
-          List<Reserve> reserves = [];
-
-          for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
-            var data = docSnapshot.data() as Map<String, dynamic>;
-
-            DocumentReference roomRef = data['reservedRoom'];
-            DocumentSnapshot<Map<String, dynamic>> roomSnapshot =
-                (await roomRef.get()) as DocumentSnapshot<Map<String, dynamic>>;
-            Room room = Room.fromFirestore(roomSnapshot);
-
-            Reserve reserve = Reserve(
-              id: docSnapshot.id,
-              reservedRoom: data[
-                  'reservedRoom'], // Use o objeto Room em vez da referência
-              userID: data['userID'],
-              bookingDateTime: data['bookingDateTime'],
-              deliveryDateTime: data['deliveryDateTime'],
-              rating: data['rating'],
-              finalPrice: data['finalPrice'],
-              delivered: data['delivered'],
-            );
-
-            reserves.add(reserve);
-          }
-
-          return reserves;
-        } catch (e) {
-          print('Erro ao obter as reservas ativas do usuário: $e');
-          return [];
-        }
+        Reserve reserve = Reserve(
+          id: docSnapshot.id,
+          reservedRoom: data['reservedRoom'],
+          userID: data['userID'],
+          bookingDateTime: bookingDateTime,
+          deliveryDateTime: deliveryDateTime,
+          rating: data['rating'],
+          finalPrice: data['finalPrice'].toDouble(),
+          delivered: data['delivered'],
+        );
+        reserves.add(reserve);
       }
-
       return reserves;
     } catch (e) {
       print('Erro ao obter as reservas ativas do usuário: $e');

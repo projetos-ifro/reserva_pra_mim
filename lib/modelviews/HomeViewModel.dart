@@ -8,7 +8,7 @@ class HomeViewModel {
   Widget buildPage(int index) {
     switch (index) {
       case 0:
-        return ProgessoPage();
+        return ProgressoPage();
       case 1:
         return InicioPage();
       case 2:

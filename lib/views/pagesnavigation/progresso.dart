@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:reserva_pra_mim/models/reserve.dart';
-import 'package:reserva_pra_mim/models/room.dart';
 import 'package:reserva_pra_mim/modelviews/constants.dart';
 import 'package:reserva_pra_mim/modelviews/reserve/reserve_controller.dart';
 import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
@@ -19,7 +17,6 @@ class _ProgessoPageState extends State<ProgressoPage> {
   final controlReserve = Get.find<Control_reserve>();
   final controlRoom = ControlRoom();
   var reserves = <Reserve>[].obs;
-  var rooms = <Reserve>[].obs;
 
   @override
   void initState() {
@@ -29,7 +26,6 @@ class _ProgessoPageState extends State<ProgressoPage> {
 
   Future<void> loadReserves() async {
     final loadedReserves = await controlReserve.getActiveUserReservations();
-
     reserves.assignAll(loadedReserves);
   }
 
@@ -47,18 +43,13 @@ class _ProgessoPageState extends State<ProgressoPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Recomendações',
+              'Sala alugadas',
               style: TextStyle(
                 color: bgColor,
                 fontSize: defaultpd * 1.5,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  print('Sala: ');
-                },
-                child: Text('Clica')),
             SizedBox(
               height: 500,
               child: Obx(
@@ -72,6 +63,7 @@ class _ProgessoPageState extends State<ProgressoPage> {
                       child: CardReserveProgress(
                         size: size,
                         reserve: reserves[index],
+                        roomid: reserves[index].reservedRoom,
                       ),
                     );
                   },

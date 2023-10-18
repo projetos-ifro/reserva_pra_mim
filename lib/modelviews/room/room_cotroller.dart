@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:reserva_pra_mim/models/room.dart';
@@ -11,8 +13,6 @@ class ControlRoom extends GetxController {
     try {
       final roomReference =
           FirebaseFirestore.instance.collection('rooms').doc(room.id);
-
-      // Atualize o campo 'isAvailable' para false
       await roomReference.update({'isAvailable': false});
     } catch (e) {
       print('Erro ao reservar a sala: $e');
@@ -40,19 +40,13 @@ class ControlRoom extends GetxController {
     }
   }
 
-  Future<Room> getRoomById(String reservedRoomId) async {
-    // Obter uma referência para a coleção de salas no Firebase Firestore
+  Future<Room?> getRoomById(String reservedRoomId) async {
     final roomsCollection = FirebaseFirestore.instance.collection('rooms');
-
-    // Obter a sala com o id especificado
     final roomDocument = await roomsCollection.doc(reservedRoomId).get();
-
-    // Verificar se a sala existe
+    // ignore: unnecessary_null_comparison
     if (roomDocument == null) {
       throw Exception('Sala não encontrada');
     }
-
-    // Converter a sala em um objeto Room
     return Room.fromFirestore(roomDocument);
   }
 
@@ -85,6 +79,25 @@ class ControlRoom extends GetxController {
     } catch (e) {
       print('Erro ao obter as salas: $e');
       return [];
+    }
+  }
+
+  Future<void> returnRoom(Room? room) async {
+    try {
+      final roomCollection = FirebaseFirestore.instance.collection('rooms');
+      final roomQuery =
+          await roomCollection.where('id', isEqualTo: room!.id).get();
+
+      if (roomQuery.docs.isNotEmpty) {
+        // Encontrou a sala com o ID correspondente
+        final roomDoc = roomQuery.docs.first;
+        await roomCollection.doc(roomDoc.id).update({'isAvailable': true});
+        print('Sala marcada como disponível novamente');
+      } else {
+        print('Sala com ID não encontrado');
+      }
+    } catch (e) {
+      print('Erro ao marcar a sala como disponível novamente: $e');
     }
   }
 }

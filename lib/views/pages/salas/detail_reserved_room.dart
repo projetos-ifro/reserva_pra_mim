@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -9,46 +7,50 @@ import 'package:reserva_pra_mim/modelviews/constants.dart';
 import 'package:reserva_pra_mim/modelviews/reserve/reserve_controller.dart';
 import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 
-class Detail_room extends StatefulWidget {
-  const Detail_room({super.key});
+class Detail_reserved_room extends StatefulWidget {
+  const Detail_reserved_room({super.key});
+
   @override
-  State<Detail_room> createState() => _Detail_roomState();
+  State<Detail_reserved_room> createState() => _Detail_reserved_roomState();
 }
 
-class _Detail_roomState extends State<Detail_room> {
+class _Detail_reserved_roomState extends State<Detail_reserved_room> {
+  final controlRoom = Get.find<ControlRoom>();
+  final controlReserve = Get.find<Control_reserve>();
+  final reserve = Get.arguments as Reserve;
+  Room? room;
+  @override
+  void initState() {
+    super.initState();
+    loadRoomData();
+  }
+
+  Future<void> loadRoomData() async {
+    room = await controlRoom.getRoomById(reserve.reservedRoom);
+    setState(() {});
+  }
+
+  Future<void> completeReservationAndReturnRoom(
+      Reserve reservation, Room? room) async {
+    try {
+      reservation.deliveryDateTime = DateTime.now();
+      reservation.delivered = true;
+      final currentTime = DateTime.now();
+      final duration =
+          reservation.deliveryDateTime!.difference(reservation.bookingDateTime);
+      final hoursReserved = duration.inHours;
+      final finalPrice = hoursReserved * room!.pricePerHour;
+      reservation.finalPrice = finalPrice.toDouble();
+      await controlReserve.updateReserve(reservation);
+      controlRoom.returnRoom(room);
+      print('Reserva completada com sucesso');
+    } catch (e) {
+      print('Erro ao completar a reserva: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final room = Get.arguments as Room;
-    final controlReserve = Control_reserve();
-    final controlRoom = ControlRoom();
-
-    void reservedRoom() async {
-      var success = true;
-      try {
-        Reserve newReserve = Reserve(
-          id: FirebaseFirestore.instance.collection('rooms').doc().id,
-          reservedRoom: room.id,
-          userID: FirebaseAuth.instance.currentUser!.uid,
-          bookingDateTime: DateTime.now(),
-          deliveryDateTime: null,
-          rating: null,
-          finalPrice: 0,
-          delivered: false,
-        );
-
-        await controlReserve.addReserve(newReserve);
-
-        print('Nome: ${room.name}');
-        Get.offNamed('/home');
-      } catch (e) {
-        print('Erro ao salvar a reserva: $e');
-        success = false;
-      }
-      if (success) {
-        controlRoom.reserveRoom(room);
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -62,7 +64,7 @@ class _Detail_roomState extends State<Detail_room> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                room.name,
+                room!.name,
                 style: TextStyle(
                     fontSize: defaultpd * 2, fontWeight: FontWeight.bold),
               ),
@@ -78,7 +80,7 @@ class _Detail_roomState extends State<Detail_room> {
                 height: 15,
               ),
               Text(
-                room.description,
+                room!.description,
                 style:
                     TextStyle(fontSize: defaultpd, fontWeight: FontWeight.bold),
               ),
@@ -87,7 +89,7 @@ class _Detail_roomState extends State<Detail_room> {
               ),
               Row(
                 children: [
-                  Text('Capacidade: ${room.capacity}',
+                  Text('Capacidade: ${room!.capacity}',
                       style: TextStyle(
                           fontSize: defaultpd, fontWeight: FontWeight.bold)),
                   const SizedBox(
@@ -101,29 +103,29 @@ class _Detail_roomState extends State<Detail_room> {
               ),
               CheckboxListTile(
                 title: const Text('Wifi'),
-                value: room.withWifi,
+                value: room!.withWifi,
                 onChanged: null,
               ),
               CheckboxListTile(
                 title: const Text('DataShow'),
-                value: room.withDatashow,
+                value: room!.withDatashow,
                 onChanged: null,
               ),
               CheckboxListTile(
                 title: const Text('Caixa de Som'),
-                value: room.withSoundBox,
+                value: room!.withSoundBox,
                 onChanged: null,
               ),
               CheckboxListTile(
                 title: const Text('Tv'),
-                value: room.withTv,
+                value: room!.withTv,
                 onChanged: null,
               ),
               const SizedBox(
                 height: 40,
               ),
               Text(
-                'Preço: R\$ ${room.pricePerHour},00 / Hr',
+                'Preço: R\$ ${room!.pricePerHour},00 / Hr',
                 style: TextStyle(
                     color: bgColor,
                     fontSize: defaultpd * 1.5,
@@ -136,7 +138,8 @@ class _Detail_roomState extends State<Detail_room> {
                 alignment: Alignment.center,
                 child: GestureDetector(
                   onTap: () {
-                    reservedRoom();
+                    completeReservationAndReturnRoom(reserve, room);
+                    Get.toNamed('/history');
                   },
                   child: Container(
                     height: 50,
@@ -147,7 +150,7 @@ class _Detail_roomState extends State<Detail_room> {
                     ),
                     child: const Center(
                       child: Text(
-                        'Reservar',
+                        'Devolver sala',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,

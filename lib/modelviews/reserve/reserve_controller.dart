@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reserva_pra_mim/models/reserve.dart';
-import 'package:reserva_pra_mim/models/room.dart';
-import 'package:reserva_pra_mim/modelviews/room/room_cotroller.dart';
 
 class Control_reserve extends GetxController {
   final firestore = FirebaseFirestore.instance;
@@ -65,6 +63,41 @@ class Control_reserve extends GetxController {
     } catch (e) {
       print('Erro ao obter as reservas ativas do usuário: $e');
       return [];
+    }
+  }
+
+  String calculateTimePassed(DateTime targetTime) {
+    final currentTime = DateTime.now();
+    final difference = currentTime.difference(targetTime);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} segundos atrás';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} minutos atrás';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} horas atrás';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} dias atrás';
+    } else {
+      final weeks = difference.inDays ~/ 7;
+      return '$weeks semanas atrás';
+    }
+  }
+
+  Future<void> updateReserve(Reserve reservation) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('reserves')
+          .doc(reservation.id)
+          .update({
+        'deliveryDateTime': reservation.deliveryDateTime,
+        'rating': reservation.rating,
+        'finalPrice': reservation.finalPrice,
+        'delivered': reservation.delivered,
+      });
+      print('Reserva atualizada com sucesso');
+    } catch (e) {
+      print('Erro ao atualizar a reserva: $e');
     }
   }
 }

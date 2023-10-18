@@ -1,27 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Usuario {
-  final String id;
   final String nome;
   final bool isAdmin;
+  final String email;
 
   Usuario({
-    required this.id,
     required this.nome,
     required this.isAdmin,
+    required this.email,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'nome': nome,
       'isAdmin': isAdmin,
+      'email': email,
     };
   }
 
-  factory Usuario.fromFirestore(Map<String, dynamic> data) {
+  factory Usuario.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Usuario(
-      id: data['id'],
       nome: data['nome'],
       isAdmin: data['isAdmin'],
+      email: data['email'],
     );
   }
 }

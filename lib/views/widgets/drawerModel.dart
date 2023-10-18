@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/menusDrawer/adminsPage.dart';
+import '../pages/menusDrawer/meuPerfil.dart';
 import '../pages/salas/create_room.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -13,7 +15,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFFD1D1D1),
+        color: Color(0xFFE7E7E7),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -28,6 +30,7 @@ class CustomDrawer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
+                          backgroundColor: Colors.white,
                           radius: 32,
                           child: Icon(
                             Icons.person,
@@ -55,8 +58,8 @@ class CustomDrawer extends StatelessWidget {
             ListTile(
               title: const Text('Meu Perfil'),
               onTap: () {
-                // Lidar com a seleção "Meu Perfil"
-                // Provavelmente você desejará navegar para a tela do perfil do usuário.
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MeuPerfilPage()));
               },
             ),
             if (isAdmin)
@@ -80,7 +83,8 @@ class CustomDrawer extends StatelessWidget {
                     left: 32), // Ajuste o valor conforme necessário
                 title: const Text('Admins'),
                 onTap: () {
-                  // Lidar com a seleção "Admins"
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AdminPage()));
                 },
               ),
           ],

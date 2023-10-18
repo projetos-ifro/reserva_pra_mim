@@ -6,6 +6,7 @@ import 'package:reserva_pra_mim/models/room.dart';
 
 import '../../modelviews/constants.dart';
 import '../../modelviews/historico/historico_controller.dart';
+import '../../modelviews/reserve/reserve_controller.dart';
 import '../../modelviews/room/room_cotroller.dart'; // Certifique-se de importar o controlador correto
 
 class CardReserveFinalizada extends StatefulWidget {
@@ -99,7 +100,7 @@ class _CardReserveFinalizadaState extends State<CardReserveFinalizada> {
                         style: const TextStyle(color: Colors.white),
                       ),
                       Text(
-                        'R\$ ${widget.reserve.finalPrice.toStringAsFixed(2)}',
+                        'R\$ ${Control_reserve().calcPrice(widget.reserve.bookingDateTime, room?.pricePerHour ?? 0).toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
